@@ -14,6 +14,15 @@ import (
 type Bus struct {
 	Type int16
 	Nr   int16
+	bus  *C.struct_sensors_bus_id
+}
+
+func (b Bus) String() string {
+	if b.Type == -1 {
+		return "*"
+	} else {
+		return C.GoString(C.sensors_get_adapter_name(b.bus))
+	}
 }
 
 type Chip struct {
@@ -32,9 +41,14 @@ func (c Chip) String() string {
 	return C.GoStringN(&buffer[0], len)
 }
 
+func (c Chip) AdapterName() string {
+	return c.Bus.String()
+}
+
 func Init() {
 	filename := C.CString("/etc/sensors3.conf")
 	defer C.free(unsafe.Pointer(filename))
+
 	mode := C.CString("r")
 	defer C.free(unsafe.Pointer(mode))
 
@@ -67,6 +81,7 @@ func GetDetectedChips() []Chip {
 		bus := Bus{
 			Type: int16(resp.bus._type),
 			Nr:   int16(resp.bus.nr),
+			bus:  &resp.bus,
 		}
 
 		chip := Chip{

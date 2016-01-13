@@ -13,7 +13,10 @@ func main() {
 	chips := gosensors.GetDetectedChips()
 
 	for i := 0; i < len(chips); i++ {
-		fmt.Println(chips[i])
+		chip := chips[i]
+
+		fmt.Println(chip)
+		fmt.Println("Adapter:", chip.AdapterName())
 		fmt.Println("")
 	}
 }
