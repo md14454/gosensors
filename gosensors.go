@@ -55,15 +55,17 @@ func GetDetectedChips() []Chip {
 			break
 		}
 
-		var bus Bus
-		bus.Type = int16(resp.bus._type)
-		bus.Nr = int16(resp.bus.nr)
+		bus := Bus{
+			Type: int16(resp.bus._type),
+			Nr:   int16(resp.bus.nr),
+		}
 
-		var chip Chip
-		chip.Prefix = C.GoString(resp.prefix)
-		chip.Bus = bus
-		chip.Addr = int32(resp.addr)
-		chip.Path = C.GoString(resp.path)
+		chip := Chip{
+			Prefix: C.GoString(resp.prefix),
+			Bus:    bus,
+			Addr:   int32(resp.addr),
+			Path:   C.GoString(resp.path),
+		}
 
 		chips = append(chips, chip)
 
