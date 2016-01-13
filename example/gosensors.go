@@ -15,8 +15,25 @@ func main() {
 	for i := 0; i < len(chips); i++ {
 		chip := chips[i]
 
-		fmt.Println(chip)
-		fmt.Println("Adapter:", chip.AdapterName())
-		fmt.Println("")
+		fmt.Printf("%v\n", chip)
+		fmt.Printf("Adapter: %v\n", chip.AdapterName())
+
+		features := chip.GetFeatures()
+
+		for j := 0; j < len(features); j++ {
+			feature := features[j]
+
+			fmt.Printf("%v (label): val\n", feature.Name)
+
+			subfeatures := feature.GetSubFeatures()
+
+			for k := 0; k < len(subfeatures); k++ {
+				subfeature := subfeatures[k]
+
+				fmt.Printf("  %v: val\n", subfeature.Name)
+			}
+		}
+
+		fmt.Printf("\n")
 	}
 }

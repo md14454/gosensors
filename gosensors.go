@@ -11,6 +11,48 @@ import (
 	"unsafe"
 )
 
+type SubFeature struct {
+	Name    string
+	Number  int32
+	Type    int32
+	Mapping int32
+	Flags   uint32
+}
+
+type Feature struct {
+	Name    string
+	Number  int32
+	Type    int32
+	chip    *C.struct_sensors_chip_name
+	feature *C.struct_sensors_feature
+}
+
+func (f Feature) GetSubFeatures() []SubFeature {
+	var subfeatures []SubFeature
+
+	var count C.int = 0
+
+	for {
+		resp := C.sensors_get_all_subfeatures(f.chip, f.feature, &count)
+
+		if resp == nil {
+			break
+		}
+
+		subfeature := SubFeature{
+			Name:    C.GoString(resp.name),
+			Number:  int32(resp.number),
+			Type:    int32(resp._type),
+			Mapping: int32(resp.mapping),
+			Flags:   uint32(resp.flags),
+		}
+
+		subfeatures = append(subfeatures, subfeature)
+	}
+
+	return subfeatures
+}
+
 type Bus struct {
 	Type int16
 	Nr   int16
@@ -43,6 +85,32 @@ func (c Chip) String() string {
 
 func (c Chip) AdapterName() string {
 	return c.Bus.String()
+}
+
+func (c Chip) GetFeatures() []Feature {
+	var features []Feature
+
+	var count C.int = 0
+
+	for {
+		resp := C.sensors_get_features(c.chip, &count)
+
+		if resp == nil {
+			break
+		}
+
+		feature := Feature{
+			Name:    C.GoString(resp.name),
+			Number:  int32(resp.number),
+			Type:    int32(resp._type),
+			chip:    c.chip,
+			feature: resp,
+		}
+
+		features = append(features, feature)
+	}
+
+	return features
 }
 
 func Init() {
