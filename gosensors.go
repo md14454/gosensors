@@ -21,6 +21,15 @@ type Chip struct {
 	Bus    Bus
 	Addr   int32
 	Path   string
+	chip   *C.struct_sensors_chip_name
+}
+
+func (c Chip) String() string {
+	var buffer [200]C.char
+
+	len := C.sensors_snprintf_chip_name(&buffer[0], C.size_t(len(buffer)), c.chip)
+
+	return C.GoStringN(&buffer[0], len)
 }
 
 func Init() {
@@ -65,6 +74,7 @@ func GetDetectedChips() []Chip {
 			Bus:    bus,
 			Addr:   int32(resp.addr),
 			Path:   C.GoString(resp.path),
+			chip:   resp,
 		}
 
 		chips = append(chips, chip)

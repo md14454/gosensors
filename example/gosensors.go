@@ -8,13 +8,12 @@ import (
 
 func main() {
 	gosensors.Init()
+	defer gosensors.Cleanup()
 
 	chips := gosensors.GetDetectedChips()
-	fmt.Printf("Found %d chips\n", len(chips))
 
 	for i := 0; i < len(chips); i++ {
-		fmt.Printf("Found <Chip prefix=%s bus=%d addr=%d path=%s>\n", chips[i].Prefix, chips[i].Bus, chips[i].Addr, chips[i].Path)
+		fmt.Println(chips[i])
+		fmt.Println("")
 	}
-
-	gosensors.Cleanup()
 }
