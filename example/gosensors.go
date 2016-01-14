@@ -23,7 +23,7 @@ func main() {
 		for j := 0; j < len(features); j++ {
 			feature := features[j]
 
-			fmt.Printf("%v (%v): %.1f\n", feature.Name, feature.GetLabel(), feature.GetValue())
+			fmt.Printf("%v ('%v'): %.1f\n", feature.Name, feature.GetLabel(), feature.GetValue())
 
 			subfeatures := feature.GetSubFeatures()
 
