@@ -17,6 +17,15 @@ type SubFeature struct {
 	Type    int32
 	Mapping int32
 	Flags   uint32
+	chip    *C.struct_sensors_chip_name
+}
+
+func (s SubFeature) GetValue() float64 {
+	var value C.double
+
+	C.sensors_get_value(s.chip, C.int(s.Number), &value)
+
+	return float64(value)
 }
 
 type Feature struct {
@@ -45,12 +54,21 @@ func (f Feature) GetSubFeatures() []SubFeature {
 			Type:    int32(resp._type),
 			Mapping: int32(resp.mapping),
 			Flags:   uint32(resp.flags),
+			chip:    f.chip,
 		}
 
 		subfeatures = append(subfeatures, subfeature)
 	}
 
 	return subfeatures
+}
+
+func (f Feature) GetLabel() string {
+	return C.GoString(C.sensors_get_label(f.chip, f.feature))
+}
+
+func (f Feature) GetValue() float64 {
+	return f.GetSubFeatures()[0].GetValue()
 }
 
 type Bus struct {
