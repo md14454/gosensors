@@ -30,7 +30,7 @@ func main() {
 			for k := 0; k < len(subfeatures); k++ {
 				subfeature := subfeatures[k]
 
-				fmt.Printf("  %v: %.1f\n", subfeature.Name, feature.GetValue())
+				fmt.Printf("  %v: %.1f\n", subfeature.Name, subfeature.GetValue())
 			}
 		}
 
