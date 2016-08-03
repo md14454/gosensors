@@ -64,7 +64,10 @@ func (f Feature) GetSubFeatures() []SubFeature {
 }
 
 func (f Feature) GetLabel() string {
-	return C.GoString(C.sensors_get_label(f.chip, f.feature))
+	clabel := C.sensors_get_label(f.chip, f.feature)
+	golabel := C.GoString(clabel)
+	C.free(unsafe.Pointer(clabel))
+	return golabel
 }
 
 func (f Feature) GetValue() float64 {
